@@ -1,8 +1,41 @@
 ---
-import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+import fs from 'node:fs';
+import path from 'node:path';
 
-const entries = await getCollection('blog');
+const blogDir = path.join(process.cwd(), 'src/content/blog');
+console.log('[index] CWD:', process.cwd(), 'Blog dir:', blogDir, 'Exists:', fs.existsSync(blogDir));
+
+let entries: any[] = [];
+
+if (fs.existsSync(blogDir)) {
+  const files = fs.readdirSync(blogDir).filter(f => f.endsWith('.md'));
+  console.log('[index] Files:', files);
+  entries = files.map(file => {
+    const content = fs.readFileSync(path.join(blogDir, file), 'utf-8');
+    const slug = file.replace('.md', '');
+    
+    const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+    let title = slug;
+    let date = new Date();
+    let tags: string[] = [];
+    
+    if (frontmatterMatch) {
+      const fm = frontmatterMatch[1];
+      const titleMatch = fm.match(/title:\s*["']?([^"'\n]+)["']?/);
+      const dateMatch = fm.match(/date:\s*(\S+)/);
+      const tagsMatch = fm.match(/tags:\s*\[([^\]]+)\]/);
+      
+      if (titleMatch) title = titleMatch[1].replace(/["']/g, '');
+      if (dateMatch) date = new Date(dateMatch[1]);
+      if (tagsMatch) {
+        tags = tagsMatch[1].split(',').map(t => t.trim().replace(/["']/g, ''));
+      }
+    }
+    
+    return { id: slug, data: { title, date, tags } };
+  });
+}
 
 const sortedEntries = entries.sort((a, b) => {
   const dateA = a.data.date instanceof Date ? a.data.date : new Date(a.data.date);
@@ -10,7 +43,7 @@ const sortedEntries = entries.sort((a, b) => {
   return dateB.getTime() - dateA.getTime();
 });
 
-function formatTimestamp(date, time) {
+function formatTimestamp(date: Date | string, time?: string): string {
   const dateObj = date instanceof Date ? date : new Date(date);
   const dateStr = dateObj.toLocaleDateString('en-US', {
     month: 'short',

@@ -12,7 +12,7 @@ if (!entry) {
 
 const { Content } = await render(entry);
 
-function formatTimestamp(date, time) {
+function formatTimestamp(date: Date | string, time?: string): string {
   const dateObj = date instanceof Date ? date : new Date(date);
   const dateStr = dateObj.toLocaleDateString('en-US', {
     month: 'short',

@@ -16,10 +16,10 @@ const formattedDate = entry.data.date instanceof Date
 ---
 
 <Layout title={`${entry.data.title} | Markdown Blog`}>
-  <a href="/">← Back to Home</a>
-  <article>
+  <a href="/" class="back-link">← Back to Home</a>
+  <article class="article-card">
     <h1>{entry.data.title}</h1>
-    <p><em>{formattedDate}</em></p>
+    <p class="entry-date"><em>{formattedDate}</em></p>
     <Content />
   </article>
 </Layout>

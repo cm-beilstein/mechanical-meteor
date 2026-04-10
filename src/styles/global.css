@@ -1,26 +1,136 @@
 @import "tailwindcss";
 
-ul {
-	padding-left: 1.2em;
+@theme {
+  --font-sans: system-ui, sans-serif;
+  --color-primary: #0070f3;
+  --color-background: #f9f9f9;
+  --color-surface: #ffffff;
+  --color-text: #222222;
+  --color-text-muted: #666666;
 }
 
-li {
-	margin-bottom: 0.5em;
+html {
+  font-family: var(--font-sans);
+  background: var(--color-background);
+  color: var(--color-text);
 }
 
-article {
-	background: #fff;
-	border-radius: 8px;
-	box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-	padding: 1.5em;
-	margin-bottom: 2em;
+body {
+  margin: 0;
+  min-height: 100vh;
+  line-height: 1.6;
 }
 
-@media (max-width: 600px) {
-	body {
-		padding: 0.5em;
-	}
-	article {
-		padding: 1em;
-	}
+.container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 1rem 0.5rem;
+  }
+}
+
+.article-card {
+  background: var(--color-surface);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .article-card {
+    padding: 1rem;
+  }
+}
+
+.article-card h1,
+.article-card h2 {
+  margin-top: 0;
+}
+
+.article-card p {
+  margin: 0.75rem 0;
+}
+
+.article-card ul,
+.article-card ol {
+  padding-left: 1.5rem;
+}
+
+.article-card code {
+  background: #f0f0f0;
+  padding: 0.125rem 0.25rem;
+  border-radius: 4px;
+  font-size: 0.875em;
+}
+
+.article-card pre {
+  background: #1e1e1e;
+  color: #d4d4d4;
+  padding: 1rem;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+.article-card pre code {
+  background: transparent;
+  padding: 0;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: var(--color-primary);
+}
+
+.entry-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.entry-list li {
+  margin-bottom: 0;
+}
+
+.entry-list a {
+  display: block;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  background: var(--color-surface);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.entry-list a:hover {
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.entry-list .entry-title {
+  font-weight: 600;
+  color: var(--color-text);
+  font-size: 1.125rem;
+}
+
+.entry-list .entry-date {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
 }

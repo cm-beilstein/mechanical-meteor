@@ -6,11 +6,18 @@ const entries = await getCollection('blog');
 ---
 
 <Layout title="Markdown Blog">
-  <h1>Markdown Blog</h1>
-  <ul>
+  <h1 class="mb-6 text-2xl font-bold">Markdown Blog</h1>
+  <ul class="entry-list">
     {entries.map(entry => (
       <li>
-        <a href={`/${entry.id}`}><strong>{entry.data.title}</strong></a> ({entry.data.date instanceof Date ? entry.data.date.toLocaleDateString() : entry.data.date})
+        <a href={`/${entry.id}`}>
+          <div class="entry-title">{entry.data.title}</div>
+          <div class="entry-date">
+            {entry.data.date instanceof Date 
+              ? entry.data.date.toLocaleDateString() 
+              : entry.data.date}
+          </div>
+        </a>
       </li>
     ))}
   </ul>

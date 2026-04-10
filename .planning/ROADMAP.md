@@ -3,7 +3,7 @@
 ## Phases
 
 - [x] **Phase 1: Project Setup & SSG Selection** - Establish project foundation, select and configure static site generator.
-- [ ] **Phase 2: Content Model & Ingestion** - Implement markdown content pipeline and homepage listing.
+- [x] **Phase 2: Content Model & Ingestion** - Implement markdown content pipeline and homepage listing.
 - [ ] **Phase 3: Core Features & Styling** - Add individual entry pages, metadata, and basic styling.
 - [ ] **Phase 4: Differentiators & Enhancements** - Implement tags/categories, RSS, theming, and prepare for future extensibility.
 
@@ -60,6 +60,6 @@
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Project Setup & SSG Selection | 1/1 | Complete | 2026-04-10 |
-| 2. Content Model & Ingestion | 0/4 | Not started | - |
+| 2. Content Model & Ingestion | 1/1 | Complete | 2026-04-10 |
 | 3. Core Features & Styling | 0/4 | Not started | - |
 | 4. Differentiators & Enhancements | 0/4 | Not started | - |

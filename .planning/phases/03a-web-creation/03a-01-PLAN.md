@@ -12,9 +12,15 @@ files_modified:
   - src/content.config.ts
 autonomous: true
 requirements:
-  - BLOG-01
-  - BLOG-02
-  - BLOG-03
+  # Phase 3A introduces new functionality beyond v1 requirements
+  # Mapping to existing REQUIREMENTS.md IDs:
+  # - CONTENT-01: Markdown files parsed at build time (new .md files created via form)
+  # - CONTENT-03: Adding new markdown auto-updates homepage
+  # - ENTRY-01: Entry pages display content (new posts become entry pages)
+  # These v1 requirements cover the backend; Phase 3A adds the web form UI
+  - CONTENT-01
+  - CONTENT-03
+  - ENTRY-01
 must_haves:
   truths:
     - "Users can access /create page to create new blog posts."
@@ -65,10 +71,11 @@ Output: Create page with form, live preview, and save functionality.
   <action>
     Create a form component for blog post creation:
     - Title input field (required)
-    - Markdown content textarea (required)
+    - Markdown content textarea (required)  
     - Tags input field (optional, comma-separated)
     - Client-side validation
-    - Submit handler that posts to API or writes file
+    - Submit handler that POSTs JSON to /api/create-post API endpoint
+    - Handle success (redirect to new post) and error responses
   </action>
   <read_first>
     - src/pages/[slug].astro

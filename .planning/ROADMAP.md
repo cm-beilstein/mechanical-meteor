@@ -5,8 +5,8 @@
 - [x] **Phase 1: Project Setup & SSG Selection** - Establish project foundation, select and configure static site generator.
 - [x] **Phase 2: Content Model & Ingestion** - Implement markdown content pipeline and homepage listing.
 - [x] **Phase 3: Core Features & Styling** - Add individual entry pages, metadata, and basic styling.
-- [ ] **Phase 3A: Web-Based Blog Creation** - Enable creating blog posts directly from the website.
-- [ ] **Phase 4: Differentiators & Enhancements** - Implement tags/categories, RSS, theming, and prepare for future extensibility.
+- [x] **Phase 3A: Web-Based Blog Creation** - Enable creating blog posts directly from the website.
+- [x] **Phase 4: Differentiators & Enhancements** - Implement tags/categories, RSS, theming, and prepare for future extensibility.
 
 ## Phase Details
 
@@ -65,8 +65,28 @@
 **Plans:** 2 plans
 
 Plans:
-- [ ] 03A.1-01-PLAN.md — Add time/timestamp to blog entries
-- [ ] 03A.1-02-PLAN.md — Docker setup with docker-compose
+- [x] 03A.1-01-PLAN.md — Add time/timestamp to blog entries
+- [x] 03A.1-02-PLAN.md — Docker setup with docker-compose
+
+### Phase 03B: Bug Fixes from Phase 03A.1
+
+**Goal**: Fix critical bugs discovered during Phase 03A.1 development.
+**Depends on**: Phase 03A.1
+**Requirements**: Fix 6 critical bugs
+**Success Criteria** (what must be TRUE):
+1. Homepage displays new posts immediately after creation via web form.
+2. Docker container binds to 0.0.0.0 to avoid "Connection reset by peer" errors.
+3. Docker permission issues with .astro directory are resolved.
+4. TypeScript errors on index.astro and [slug].astro are resolved.
+5. Creating new entry from Docker returns success (not 404).
+6. Blog entries have unique auto-generated filenames.
+**Plans**: 4 plans
+
+Plans:
+- [x] 03B-01-PLAN.md — Homepage + TypeScript fixes
+- [x] 03B-02-PLAN.md — Docker connection + permissions
+- [x] 03B-03-PLAN.md — API path fix
+- [x] 03B-04-PLAN.md — Unique filename generation
 
 ### Phase 4: Differentiators & Enhancements
 **Goal**: Site supports advanced features and is ready for future extensibility.
@@ -87,5 +107,6 @@ Plans:
 | 1. Project Setup & SSG Selection | 1/1 | Complete | 2026-04-10 |
 | 2. Content Model & Ingestion | 1/1 | Complete | 2026-04-10 |
 | 3. Core Features & Styling | 1/1 | Complete | 2026-04-10 |
-| 3A. Web-Based Blog Creation | 0/1 | Not started | - |
+| Phase 3A.1: Adding time/timestamp & Docker | 2/2 | Complete | 2026-04-10 |
+| 3B. Bug Fixes from Phase 03A.1 | 0/4 | Ready to execute | - |
 | 4. Differentiators & Enhancements | 0/4 | Not started | - |

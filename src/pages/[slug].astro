@@ -1,16 +1,58 @@
 ---
-import { getCollection, render } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+import fs from 'node:fs';
+import path from 'node:path';
 
 const slug = Astro.params.slug;
-const entries = await getCollection('blog');
-const entry = entries.find(e => e.id === slug);
 
-if (!entry) {
+// Read file directly instead of using getCollection (which only works at build time)
+const blogDir = path.join(process.cwd(), 'src/content/blog');
+const files = fs.readdirSync(blogDir).filter(f => f.endsWith('.md'));
+
+// Find the file that matches the slug (filename without .md)
+const file = files.find(f => f.replace('.md', '') === slug);
+
+if (!file) {
   return Astro.redirect('/404');
 }
 
-const { Content } = await render(entry);
+// Read and parse the file
+const filePath = path.join(blogDir, file);
+const content = fs.readFileSync(filePath, 'utf-8');
+
+const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+let title = slug;
+let date = new Date();
+let time: string | undefined;
+let tags: string[] = [];
+let body = content;
+
+if (frontmatterMatch) {
+  const fm = frontmatterMatch[1];
+  const titleMatch = fm.match(/title:\s*["']?([^"'\n]+)["']?/);
+  const dateMatch = fm.match(/date:\s*(\S+)/);
+  const timeMatch = fm.match(/time:\s*(\S+)/);
+  const tagsMatch = fm.match(/tags:\s*\[([^\]]+)\]/);
+  
+  if (titleMatch) title = titleMatch[1].replace(/["']/g, '');
+  if (dateMatch) date = new Date(dateMatch[1]);
+  if (timeMatch) time = timeMatch[1];
+  if (tagsMatch) {
+    tags = tagsMatch[1].split(',').map((t: string) => t.trim().replace(/["']/g, ''));
+  }
+  
+  // Get body content (after frontmatter)
+  body = content.slice(frontmatterMatch[0].length).trim();
+}
+
+// Simple markdown to HTML conversion for the body
+const contentHtml = body
+  .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+  .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+  .replace(/^# (.*$)/gm, '<h1>$1</h1>')
+  .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+  .replace(/\*(.*?)\*/g, '<em>$1</em>')
+  .replace(/\n/g, '<br>');
 
 function formatTimestamp(date: Date | string, time?: string): string {
   const dateObj = date instanceof Date ? date : new Date(date);
@@ -35,14 +77,14 @@ function formatTimestamp(date: Date | string, time?: string): string {
   return dateStr;
 }
 
-const formattedDate = formatTimestamp(entry.data.date, entry.data.time);
+const formattedDate = formatTimestamp(date, time);
 ---
 
-<Layout title={`${entry.data.title} | Markdown Blog`}>
+<Layout title={`${title} | Markdown Blog`}>
   <a href="/" class="back-link">← Back to Home</a>
   <article class="article-card">
-    <h1>{entry.data.title}</h1>
+    <h1>{title}</h1>
     <p class="entry-date"><em>{formattedDate}</em></p>
-    <Content />
+    <div set:html={contentHtml} />
   </article>
 </Layout>

@@ -52,14 +52,17 @@ export const POST: APIRoute = async ({ request, redirect }) => {
       ? tags.split(',').map((t: string) => t.trim()).filter((t: string) => t)
       : [];
 
-    // Get current date
-    const date = new Date().toISOString().split('T')[0];
+    // Get current date and time
+    const now = new Date();
+    const date = now.toISOString().split('T')[0];
+    const time = now.toTimeString().split(' ')[0].substring(0, 5); // HH:MM format
 
     // Build markdown file content with frontmatter
     const frontmatter = [
       '---',
       `title: "${title.replace(/"/g, '\\"')}"`,
       `date: ${date}`,
+      `time: ${time}`,
       tagsArray.length > 0 ? `tags: [${tagsArray.map((t: string) => `"${t.replace(/"/g, '\\"')}"`).join(', ')}]` : 'tags: []',
       '---',
       '',

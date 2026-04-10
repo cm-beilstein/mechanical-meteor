@@ -1,43 +1,74 @@
-# Astro Starter Kit: Minimal
+# Markdown Blog
 
-```sh
-npm create astro@latest -- --template minimal
+A web-based blog application built with Astro that allows you to create and manage blog posts directly from the browser.
+
+## 🚀 Quick Start
+
+### Option 1: Docker (Recommended)
+
+```bash
+docker compose up -d
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+The application will be available at **http://localhost:4321**
 
-## 🚀 Project Structure
+### Option 2: Local Development
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```bash
+npm install
+npm run dev
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+The application will be available at **http://localhost:4321**
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## 📖 Features
 
-Any static assets, like images, can be placed in the `public/` directory.
+- **Web-based post creation** — Create blog posts directly from the browser at `/create`
+- **Live markdown preview** — See your content rendered in real-time as you type
+- **Auto-generated filenames** — Posts are saved with unique timestamp-based filenames
+- **Tag filtering** — Filter blog posts by tags on the homepage
+- **RSS feed** — Subscribe to blog updates at `/rss.xml`
+- **Docker support** — Run the entire application in a container
 
 ## 🧞 Commands
 
-All commands are run from the root of the project, from a terminal:
+| Command | Action |
+| :--- | :--- |
+| `npm install` | Install dependencies |
+| `npm run dev` | Start local dev server at `localhost:4321` |
+| `npm run build` | Build production site to `./dist/` |
+| `npm run preview` | Preview build locally |
+| `docker compose up -d` | Start application in Docker |
+| `docker compose down` | Stop Docker container |
+| `docker compose build` | Rebuild Docker image |
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+## 📖 Usage
+
+- **Homepage** — View all blog posts at `/`
+- **Create post** — Add new posts at `/create`
+- **Filter by tag** — Click filter pills on homepage to filter posts
+- **RSS feed** — Subscribe at `/rss.xml`
+
+## 📁 Project Structure
+
+```
+/
+├── src/
+│   ├── pages/          # Astro pages and API routes
+│   ├── components/     # Reusable components
+│   ├── content/blog/   # Blog post markdown files
+│   └── layouts/        # Page layouts
+├── public/             # Static assets
+├── Dockerfile          # Docker build configuration
+└── docker-compose.yml  # Docker orchestration
+```
+
+## 🔧 Configuration
+
+- **Port:** 4321 (default)
+- **Node adapter:** `@astrojs/node` (SSR mode)
+- **Content:** Markdown files in `src/content/blog/`
 
 ## 👀 Want to learn more?
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Check the [Astro documentation](https://docs.astro.build).

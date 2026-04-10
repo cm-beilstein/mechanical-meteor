@@ -3,12 +3,18 @@ import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 
 const entries = await getCollection('blog');
+
+const sortedEntries = entries.sort((a, b) => {
+  const dateA = a.data.date instanceof Date ? a.data.date : new Date(a.data.date);
+  const dateB = b.data.date instanceof Date ? b.data.date : new Date(b.data.date);
+  return dateB.getTime() - dateA.getTime();
+});
 ---
 
 <Layout title="Markdown Blog">
   <h1 class="mb-6 text-2xl font-bold">Markdown Blog</h1>
   <ul class="entry-list">
-    {entries.map(entry => (
+    {sortedEntries.map(entry => (
       <li>
         <a href={`/${entry.id}`}>
           <div class="entry-title">{entry.data.title}</div>

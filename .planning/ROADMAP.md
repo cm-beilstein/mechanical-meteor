@@ -5,6 +5,7 @@
 - [x] **Phase 1: Project Setup & SSG Selection** - Establish project foundation, select and configure static site generator.
 - [x] **Phase 2: Content Model & Ingestion** - Implement markdown content pipeline and homepage listing.
 - [x] **Phase 3: Core Features & Styling** - Add individual entry pages, metadata, and basic styling.
+- [ ] **Phase 3A: Web-Based Blog Creation** - Enable creating blog posts directly from the website.
 - [ ] **Phase 4: Differentiators & Enhancements** - Implement tags/categories, RSS, theming, and prepare for future extensibility.
 
 ## Phase Details
@@ -43,6 +44,19 @@
 **Plans**: TBD
 **UI hint**: yes
 
+### Phase 3A: Web-Based Blog Creation
+**Goal**: Enable users to create blog posts directly from the website without needing to edit markdown files manually.
+**Depends on**: Phase 3
+**Requirements**: Blog creation form, markdown preview, save functionality
+**Success Criteria** (what must be TRUE):
+  1. Users can access a "Create Post" page from the website.
+  2. Users can enter a title, content (markdown), and optional tags.
+  3. Live markdown preview shows how the post will look.
+  4. Posts can be saved to the content collection.
+  5. New posts appear on the homepage after saving.
+**Plans**: TBD
+**UI hint**: yes
+
 ### Phase 4: Differentiators & Enhancements
 **Goal**: Site supports advanced features and is ready for future extensibility.
 **Depends on**: Phase 3
@@ -62,4 +76,5 @@
 | 1. Project Setup & SSG Selection | 1/1 | Complete | 2026-04-10 |
 | 2. Content Model & Ingestion | 1/1 | Complete | 2026-04-10 |
 | 3. Core Features & Styling | 1/1 | Complete | 2026-04-10 |
+| 3A. Web-Based Blog Creation | 0/1 | Not started | - |
 | 4. Differentiators & Enhancements | 0/4 | Not started | - |

@@ -18,29 +18,40 @@ if (fs.existsSync(blogDir)) {
     const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
     let title = slug;
     let date = new Date();
+    let time: string | undefined;
     let tags: string[] = [];
     
     if (frontmatterMatch) {
       const fm = frontmatterMatch[1];
       const titleMatch = fm.match(/title:\s*["']?([^"'\n]+)["']?/);
       const dateMatch = fm.match(/date:\s*(\S+)/);
+      const timeMatch = fm.match(/time:\s*(\S+)/);
       const tagsMatch = fm.match(/tags:\s*\[([^\]]+)\]/);
       
       if (titleMatch) title = titleMatch[1].replace(/["']/g, '');
       if (dateMatch) date = new Date(dateMatch[1]);
+      if (timeMatch) time = timeMatch[1];
       if (tagsMatch) {
         tags = tagsMatch[1].split(',').map(t => t.trim().replace(/["']/g, ''));
       }
     }
     
-    return { id: slug, data: { title, date, tags } };
+    return { id: slug, data: { title, date, time, tags } };
   });
 }
 
 const sortedEntries = entries.sort((a, b) => {
   const dateA = a.data.date instanceof Date ? a.data.date : new Date(a.data.date);
   const dateB = b.data.date instanceof Date ? b.data.date : new Date(b.data.date);
-  return dateB.getTime() - dateA.getTime();
+  
+  // If dates are the same, sort by time
+  const dateCompare = dateB.getTime() - dateA.getTime();
+  if (dateCompare !== 0) return dateCompare;
+  
+  // Sort by time if date is same
+  const timeA = a.data.time || '00:00';
+  const timeB = b.data.time || '00:00';
+  return timeB.localeCompare(timeA);
 });
 
 function formatTimestamp(date: Date | string, time?: string): string {
@@ -65,14 +76,25 @@ function formatTimestamp(date: Date | string, time?: string): string {
   
   return dateStr;
 }
+
+// Extract all unique tags from entries
+const allTags = [...new Set(entries.flatMap(e => e.data.tags || []))].sort();
 ---
 
 <Layout title="Markdown Blog">
   <h1 class="mb-6 text-2xl font-bold">Markdown Blog</h1>
   <a href="/create" class="create-link">+ Create New Post</a>
+  {(allTags.length > 0) && (
+    <div class="filter-pills mb-4 flex flex-wrap gap-2">
+      <button class="filter-pill active" data-tag="all">All</button>
+      {allTags.map(tag => (
+        <button class="filter-pill" data-tag={tag}>{tag}</button>
+      ))}
+    </div>
+  )}
   <ul class="entry-list">
     {sortedEntries.map(entry => (
-      <li>
+      <li data-tags={entry.data.tags?.join(',')}>
         <a href={`/${entry.id}`}>
           <div class="entry-title">{entry.data.title}</div>
           <div class="entry-date">
@@ -82,4 +104,40 @@ function formatTimestamp(date: Date | string, time?: string): string {
       </li>
     ))}
   </ul>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const pills = document.querySelectorAll('.filter-pill');
+      const entries = document.querySelectorAll('.entry-list li');
+      
+      pills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          const tag = pill.dataset.tag;
+          
+          // Toggle active state
+          if (tag === 'all') {
+            pills.forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+          } else {
+            document.querySelector('[data-tag="all"]')?.classList.remove('active');
+            pill.classList.toggle('active');
+          }
+          
+          // Get selected tags
+          const selected = [...document.querySelectorAll('.filter-pill.active')]
+            .map(p => p.dataset.tag)
+            .filter(t => t !== 'all');
+          
+          // Filter entries
+          entries.forEach(entry => {
+            const entryTags = entry.dataset.tags?.split(',') || [];
+            if (selected.length === 0 || selected.some(t => entryTags.includes(t))) {
+              entry.style.display = '';
+            } else {
+              entry.style.display = 'none';
+            }
+          });
+        });
+      });
+    });
+  </script>
 </Layout>

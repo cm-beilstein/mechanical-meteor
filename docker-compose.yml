@@ -6,13 +6,9 @@ services:
     ports:
       - "4321:4321"
     environment:
-      - NODE_ENV=development
-    volumes:
-      - ./src:/app/src
-      - ./public:/app/public
-      - ./astro.config.mjs:/app/astro.config.mjs:ro
-      - ./package.json:/app/package.json:ro
-    command: npm run dev
+      - NODE_ENV=production
+      - PORT=4321
+      - HOST=0.0.0.0
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:4321/"]
       interval: 30s
@@ -20,3 +16,4 @@ services:
       retries: 3
       start_period: 10s
     restart: unless-stopped
+    user: root

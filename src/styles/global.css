@@ -130,7 +130,24 @@ a:hover {
 }
 
 .entry-list .entry-date {
-  color: var(--color-text-muted);
+  color: var(--color-text-muted, #666666);
   font-size: 0.875rem;
   margin-top: 0.25rem;
+}
+
+.create-link {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  padding: 0.75rem 1.25rem;
+  background: var(--color-primary, #0070f3);
+  color: white;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.create-link:hover {
+  background: #005bb5;
+  text-decoration: none;
+  transform: translateY(-1px);
 }

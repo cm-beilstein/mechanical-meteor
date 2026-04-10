@@ -1,0 +1,219 @@
+---
+interface Props {
+  onSubmit?: (data: { title: string; content: string; tags: string }) => void;
+}
+
+const { onSubmit } = Astro.props;
+---
+
+<form id="post-form" class="post-form">
+  <div class="form-group">
+    <label for="title">Title <span class="required">*</span></label>
+    <input 
+      type="text" 
+      id="title" 
+      name="title" 
+      required 
+      placeholder="Enter post title"
+      class="form-input"
+    />
+  </div>
+
+  <div class="form-group">
+    <label for="content">Content (Markdown) <span class="required">*</span></label>
+    <textarea 
+      id="content" 
+      name="content" 
+      required 
+      placeholder="Write your content in Markdown..."
+      rows="15"
+      class="form-textarea"
+    ></textarea>
+  </div>
+
+  <div class="form-group">
+    <label for="tags">Tags <span class="optional">(optional, comma-separated)</span></label>
+    <input 
+      type="text" 
+      id="tags" 
+      name="tags" 
+      placeholder="e.g., tech, tutorial, news"
+      class="form-input"
+    />
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="submit-btn">Create Post</button>
+  </div>
+
+  <div id="form-message" class="form-message" hidden></div>
+</form>
+
+<style>
+  .post-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .form-group label {
+    font-weight: 600;
+    color: var(--color-text, #222222);
+  }
+
+  .required {
+    color: #dc2626;
+  }
+
+  .optional {
+    color: var(--color-text-muted, #666666);
+    font-weight: normal;
+    font-size: 0.875rem;
+  }
+
+  .form-input,
+  .form-textarea {
+    padding: 0.75rem;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .form-input:focus,
+  .form-textarea:focus {
+    outline: none;
+    border-color: var(--color-primary, #0070f3);
+    box-shadow: 0 0 0 3px rgba(0, 112, 243, 0.1);
+  }
+
+  .form-textarea {
+    font-family: ui-monospace, monospace;
+    resize: vertical;
+    min-height: 200px;
+  }
+
+  .form-actions {
+    margin-top: 0.5rem;
+  }
+
+  .submit-btn {
+    background: var(--color-primary, #0070f3);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+  }
+
+  .submit-btn:hover {
+    background: #005bb5;
+    transform: translateY(-1px);
+  }
+
+  .submit-btn:active {
+    transform: translateY(0);
+  }
+
+  .submit-btn:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .form-message {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 0.5rem;
+  }
+
+  .form-message.success {
+    background: #ecfdf5;
+    border: 1px solid #10b981;
+    color: #065f46;
+  }
+
+  .form-message.error {
+    background: #fef2f2;
+    border: 1px solid #ef4444;
+    color: #991b1b;
+  }
+</style>
+
+<script>
+  const form = document.getElementById('post-form') as HTMLFormElement;
+  const messageEl = document.getElementById('form-message');
+  const submitBtn = form?.querySelector('button[type="submit"]') as HTMLButtonElement;
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    if (!messageEl || !submitBtn) return;
+    
+    const formData = new FormData(form);
+    const data = {
+      title: formData.get('title') as string,
+      content: formData.get('content') as string,
+      tags: formData.get('tags') as string
+    };
+
+    // Client-side validation
+    if (!data.title.trim()) {
+      showMessage('Title is required', 'error');
+      return;
+    }
+    if (!data.content.trim()) {
+      showMessage('Content is required', 'error');
+      return;
+    }
+
+    // Show loading state
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Creating...';
+    messageEl.hidden = true;
+
+    try {
+      const response = await fetch('/api/create-post', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        showMessage(`Post created successfully! Redirecting...`, 'success');
+        // Redirect to the new post or homepage
+        setTimeout(() => {
+          window.location.href = result.redirectUrl || '/';
+        }, 1500);
+      } else {
+        showMessage(result.message || 'Failed to create post', 'error');
+      }
+    } catch (error) {
+      showMessage('Error: Could not connect to server. Make sure you are running in development mode with an SSR adapter.', 'error');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Create Post';
+    }
+  });
+
+  function showMessage(text: string, type: 'success' | 'error') {
+    if (!messageEl) return;
+    messageEl.textContent = text;
+    messageEl.className = `form-message ${type}`;
+    messageEl.hidden = false;
+  }
+</script>

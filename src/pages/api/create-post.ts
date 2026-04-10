@@ -1,0 +1,90 @@
+import type { APIRoute } from 'astro';
+import fs from 'node:fs';
+import path from 'node:path';
+
+export const POST: APIRoute = async ({ request, redirect }) => {
+  try {
+    const body = await request.json();
+    const { title, content, tags } = body;
+
+    // Validate required fields
+    if (!title || !title.trim()) {
+      return new Response(JSON.stringify({
+        success: false,
+        message: 'Title is required'
+      }), { status: 400 });
+    }
+
+    if (!content || !content.trim()) {
+      return new Response(JSON.stringify({
+        success: false,
+        message: 'Content is required'
+      }), { status: 400 });
+    }
+
+    // Generate slug from title
+    const slug = title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '');
+
+    // Check for existing files with this slug
+    const blogDir = path.resolve('./src/content/blog');
+    
+    // Ensure the directory exists
+    if (!fs.existsSync(blogDir)) {
+      fs.mkdirSync(blogDir, { recursive: true });
+    }
+
+    // Find available filename
+    let filename = `${slug}.md`;
+    let counter = 1;
+    while (fs.existsSync(path.join(blogDir, filename))) {
+      filename = `${slug}-${counter}.md`;
+      counter++;
+    }
+
+    // Parse tags
+    const tagsArray = tags 
+      ? tags.split(',').map(t => t.trim()).filter(t => t)
+      : [];
+
+    // Get current date
+    const date = new Date().toISOString().split('T')[0];
+
+    // Build markdown file content with frontmatter
+    const frontmatter = [
+      '---',
+      `title: "${title.replace(/"/g, '\\"')}"`,
+      `date: ${date}`,
+      tagsArray.length > 0 ? `tags: [${tagsArray.map(t => `"${t.replace(/"/g, '\\"')}"`).join(', ')}]` : 'tags: []',
+      '---',
+      '',
+      content
+    ].join('\n');
+
+    // Write the file
+    const filePath = path.join(blogDir, filename);
+    fs.writeFileSync(filePath, frontmatter, 'utf-8');
+
+    // Return success with redirect URL (to the new post)
+    const redirectUrl = `/${slug}`;
+
+    return new Response(JSON.stringify({
+      success: true,
+      message: 'Post created successfully',
+      redirectUrl
+    }), {
+      status: 201,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+  } catch (error) {
+    console.error('Error creating post:', error);
+    return new Response(JSON.stringify({
+      success: false,
+      message: 'Failed to create post. Please try again.'
+    }), { status: 500 });
+  }
+};

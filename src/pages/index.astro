@@ -13,6 +13,7 @@ const sortedEntries = entries.sort((a, b) => {
 
 <Layout title="Markdown Blog">
   <h1 class="mb-6 text-2xl font-bold">Markdown Blog</h1>
+  <a href="/create" class="create-link">+ Create New Post</a>
   <ul class="entry-list">
     {sortedEntries.map(entry => (
       <li>

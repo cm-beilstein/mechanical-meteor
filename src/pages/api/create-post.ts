@@ -29,24 +29,27 @@ export const POST: APIRoute = async ({ request, redirect }) => {
       .replace(/^-|-$/g, '');
 
     // Check for existing files with this slug
-    const blogDir = path.resolve('./src/content/blog');
+    const blogDir = path.resolve(process.cwd(), 'src/content/blog');
+    console.log('[create-post] CWD:', process.cwd(), 'Blog dir:', blogDir);
     
     // Ensure the directory exists
     if (!fs.existsSync(blogDir)) {
       fs.mkdirSync(blogDir, { recursive: true });
     }
 
-    // Find available filename
-    let filename = `${slug}.md`;
+    // Find available filename - use timestamp for uniqueness
+    const timestamp = Date.now();
+    let filename = `${slug}-${timestamp}.md`;
+    // Double-check it doesn't conflict (extremely rare)
     let counter = 1;
     while (fs.existsSync(path.join(blogDir, filename))) {
-      filename = `${slug}-${counter}.md`;
+      filename = `${slug}-${timestamp}-${counter}.md`;
       counter++;
     }
 
     // Parse tags
     const tagsArray = tags 
-      ? tags.split(',').map(t => t.trim()).filter(t => t)
+      ? tags.split(',').map((t: string) => t.trim()).filter((t: string) => t)
       : [];
 
     // Get current date
@@ -57,7 +60,7 @@ export const POST: APIRoute = async ({ request, redirect }) => {
       '---',
       `title: "${title.replace(/"/g, '\\"')}"`,
       `date: ${date}`,
-      tagsArray.length > 0 ? `tags: [${tagsArray.map(t => `"${t.replace(/"/g, '\\"')}"`).join(', ')}]` : 'tags: []',
+      tagsArray.length > 0 ? `tags: [${tagsArray.map((t: string) => `"${t.replace(/"/g, '\\"')}"`).join(', ')}]` : 'tags: []',
       '---',
       '',
       content
@@ -68,7 +71,8 @@ export const POST: APIRoute = async ({ request, redirect }) => {
     fs.writeFileSync(filePath, frontmatter, 'utf-8');
 
     // Return success with redirect URL (to the new post)
-    const redirectUrl = `/${slug}`;
+    // Use filename without extension for redirect
+    const redirectUrl = `/${filename.replace('.md', '')}`;
 
     return new Response(JSON.stringify({
       success: true,

@@ -2,17 +2,40 @@
 import { getCollection, render } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 
-export async function getStaticPaths() {
-  const entries = await getCollection('blog');
-  return entries.map(entry => ({ params: { slug: entry.id }, props: { entry } }));
+const slug = Astro.params.slug;
+const entries = await getCollection('blog');
+const entry = entries.find(e => e.id === slug);
+
+if (!entry) {
+  return Astro.redirect('/404');
 }
 
-const { entry } = Astro.props;
 const { Content } = await render(entry);
 
-const formattedDate = entry.data.date instanceof Date 
-  ? entry.data.date.toLocaleDateString() 
-  : entry.data.date;
+function formatTimestamp(date, time) {
+  const dateObj = date instanceof Date ? date : new Date(date);
+  const dateStr = dateObj.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  });
+  
+  if (time) {
+    const [hours, minutes] = time.split(':');
+    const dateWithTime = new Date(dateObj);
+    dateWithTime.setHours(parseInt(hours, 10), parseInt(minutes, 10));
+    const timeStr = dateWithTime.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+    return `${dateStr} at ${timeStr}`;
+  }
+  
+  return dateStr;
+}
+
+const formattedDate = formatTimestamp(entry.data.date, entry.data.time);
 ---
 
 <Layout title={`${entry.data.title} | Markdown Blog`}>

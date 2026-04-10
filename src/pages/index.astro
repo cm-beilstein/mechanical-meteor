@@ -9,6 +9,29 @@ const sortedEntries = entries.sort((a, b) => {
   const dateB = b.data.date instanceof Date ? b.data.date : new Date(b.data.date);
   return dateB.getTime() - dateA.getTime();
 });
+
+function formatTimestamp(date, time) {
+  const dateObj = date instanceof Date ? date : new Date(date);
+  const dateStr = dateObj.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  });
+  
+  if (time) {
+    const [hours, minutes] = time.split(':');
+    const dateWithTime = new Date(dateObj);
+    dateWithTime.setHours(parseInt(hours, 10), parseInt(minutes, 10));
+    const timeStr = dateWithTime.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+    return `${dateStr} at ${timeStr}`;
+  }
+  
+  return dateStr;
+}
 ---
 
 <Layout title="Markdown Blog">
@@ -20,9 +43,7 @@ const sortedEntries = entries.sort((a, b) => {
         <a href={`/${entry.id}`}>
           <div class="entry-title">{entry.data.title}</div>
           <div class="entry-date">
-            {entry.data.date instanceof Date 
-              ? entry.data.date.toLocaleDateString() 
-              : entry.data.date}
+            {formatTimestamp(entry.data.date, entry.data.time)}
           </div>
         </a>
       </li>

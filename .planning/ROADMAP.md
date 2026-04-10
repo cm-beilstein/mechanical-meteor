@@ -57,6 +57,17 @@
 **Plans**: TBD
 **UI hint**: yes
 
+### Phase 03A.1: Adding time/timestamp to blog entries and Docker setup with docker-compose (INSERTED)
+
+**Goal:** Add time/timestamp display to blog entries and containerize the application with Docker.
+**Requirements**: Timestamp display, Docker containerization
+**Depends on:** Phase 3a
+**Plans:** 2 plans
+
+Plans:
+- [ ] 03A.1-01-PLAN.md — Add time/timestamp to blog entries
+- [ ] 03A.1-02-PLAN.md — Docker setup with docker-compose
+
 ### Phase 4: Differentiators & Enhancements
 **Goal**: Site supports advanced features and is ready for future extensibility.
 **Depends on**: Phase 3

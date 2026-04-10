@@ -1,0 +1,25 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('blog');
+  return entries.map(entry => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const formattedDate = entry.data.date instanceof Date 
+  ? entry.data.date.toLocaleDateString() 
+  : entry.data.date;
+---
+
+<Layout title={`${entry.data.title} | Markdown Blog`}>
+  <a href="/">← Back to Home</a>
+  <article>
+    <h1>{entry.data.title}</h1>
+    <p><em>{formattedDate}</em></p>
+    <Content />
+  </article>
+</Layout>
